@@ -1,4 +1,4 @@
-"""테스트용 캐릭터 도트 생성기.
+"""테스트용 캐릭터 도트 생성기 (2등신 버전).
 
 실제 그림이 나오기 전까지 Godot에서 쓸 임시(placeholder) 스프라이트를 만든다.
 각 캐릭터마다 32x48 프레임으로 된 스프라이트 시트를 만든다.
@@ -27,34 +27,58 @@ SKIN = c("#fbe0cb")
 SKIN_SH = c("#ecc2a6")
 LASH = c("#3a2626")
 WHITE = c("#ffffff")
-BLUSH = c("#f5b5a5")
+BLUSH = c("#f5b0a0")
+
+# 2등신: 머리가 키의 절반 정도
+HEAD = [5, 7, 8, 9, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 9, 9, 8, 7, 5]
+CAP = [5, 7, 9, 10, 10, 11, 11, 11]
+HEAD_H = len(HEAD)
+TORSO_H = 8
 
 CHARS = {
     "A": dict(
-        leg=9,
+        leg=6,
         hair=(c("#e9cf8e"), c("#c8a564"), c("#f7e7b6")),
-        eye=(c("#b8834c"), c("#8a5a2e")),
+        eye=(c("#b8834c"), c("#7d5028")),
         mouth=c("#d07a6a"),
         blush=True,
     ),
     "B": dict(
-        leg=12,
-        hair=(c("#2c2c3a"), c("#1b1b25"), c("#4c4c66")),
-        eye=(c("#86cff2"), c("#4f9fcc")),
+        leg=8,
+        hair=(c("#2c2c3a"), c("#1b1b25"), c("#50506c")),
+        eye=(c("#86cff2"), c("#4a94c2")),
         mouth=c("#b0756a"),
         blush=False,
     ),
     "C": dict(
-        leg=8,
+        leg=6,
         hair=(c("#8b5b3d"), c("#6a4029"), c("#ab7754")),
-        eye=(c("#58ad5f"), c("#357c3d")),
+        eye=(c("#58ad5f"), c("#2f7037")),
         mouth=c("#d07a6a"),
         blush=True,
     ),
 }
 
-HEAD = [4, 6, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 7, 7, 6, 4]
-CAP = [4, 6, 8, 8, 9, 9, 9]
+# ---------------------------------------------------------------- 의상 색
+
+A_HOOD = (c("#c9a266"), c("#a47f43"), c("#ddbd88"))   # 진한 베이지 ~ 황토
+A_STRING = c("#ffe36b")
+A_JEAN = (c("#4c71a8"), c("#3a5686"), c("#6c90c6"))
+A_SHOE = (c("#f0f0f0"), c("#c4c4cc"))
+
+B_COAT = (c("#8ccbec"), c("#64a6cd"), c("#b6e2f8"))   # 하늘색 마이
+B_SHIRT = (c("#f7f7fa"), c("#d4d5e2"))
+B_PANTS = (c("#262630"), c("#1a1a22"), c("#3a3a4a"))
+B_SHOE = (c("#17171c"), c("#3c3c48"))
+B_GLASS = c("#121216")
+B_TIE = c("#5c6672")
+
+C_CARD = (c("#7f8f3e"), c("#62702b"), c("#9cad57"))   # 올리브 가디건
+C_BLOUSE = (c("#f4ebd3"), c("#ddd0ae"))
+C_SKIRT = (c("#5c3f2f"), c("#452e22"), c("#76533f"))
+C_SHOE = (c("#2e2420"), c("#4e403a"))
+
+TOP = {"A": A_HOOD, "B": B_COAT, "C": C_CARD}
 
 
 class Canvas:
@@ -79,6 +103,7 @@ class Canvas:
         self.rect(cx - hw, y, cx + hw - 1, y, col)
 
     def outline(self):
+        """빈 칸 중 그림과 맞닿은 칸에 이웃 색을 어둡게 해서 테두리를 그린다."""
         add = []
         for y in range(H):
             for x in range(W):
@@ -109,101 +134,69 @@ def layout(cfg):
     leg_bot = shoe_top - 1
     leg_top = leg_bot - cfg["leg"] + 1
     tb = leg_top - 1
-    tt = tb - 10
-    ht = tt - 15
-    return dict(ground=ground, shoe_top=shoe_top, leg_bot=leg_bot, leg_top=leg_top, tb=tb, tt=tt, ht=ht)
+    tt = tb - TORSO_H + 1
+    ht = tt - HEAD_H + 1          # 턱이 옷깃 위로 1줄 겹친다
+    return dict(ground=ground, shoe_top=shoe_top, leg_bot=leg_bot,
+                leg_top=leg_top, tb=tb, tt=tt, ht=ht, ey=ht + 11)
 
 
-# ---------------------------------------------------------------- 의상 색
+# ---------------------------------------------------------------- 정면 / 뒷면 몸
 
-A_HOOD = (c("#dcc7a2"), c("#b9a07a"), c("#eee2c8"))
-A_JEAN = (c("#4c71a8"), c("#3a5686"), c("#6c90c6"))
-A_SHOE = (c("#f0f0f0"), c("#c4c4cc"))
-A_STRING = c("#f5d03f")
-
-B_COAT = (c("#2f2f3b"), c("#1f1f29"), c("#47475c"))
-B_SHIRT = (c("#f4f4f8"), c("#cfd0de"))
-B_PANTS = (c("#262630"), c("#1a1a22"), c("#3a3a4a"))
-B_SHOE = (c("#17171c"), c("#3c3c48"))
-B_GLASS = c("#121216")
-
-C_CARD = (c("#7f8f3e"), c("#62702b"), c("#9cad57"))
-C_BLOUSE = (c("#f4ebd3"), c("#ddd0ae"))
-C_SKIRT = (c("#5c3f2f"), c("#452e22"), c("#76533f"))
-C_SHOE = (c("#2e2420"), c("#4e403a"))
-
-
-# ---------------------------------------------------------------- 몸통 (정면/뒷면 공통)
-
-def draw_arms_front(cv, L, base, sh, cuff, arm_dy):
+def draw_arms_front(cv, L, top, cuff, arm_dy):
+    base, sh, _ = top
     tt = L["tt"]
     for (x0, x1, dy, inner) in ((9, 10, arm_dy[0], 10), (21, 22, arm_dy[1], 21)):
-        cv.rect(x0, tt + 1, x1, tt + 8 + dy, base)
-        cv.rect(inner, tt + 1, inner, tt + 8 + dy, sh)
-        if cuff is not None:
-            cv.rect(x0, tt + 8 + dy, x1, tt + 8 + dy, cuff)
-        cv.rect(x0, tt + 9 + dy, x1, tt + 10 + dy, SKIN)
-        cv.set(x0 if x0 == 9 else x1, tt + 10 + dy, SKIN_SH)
+        cv.rect(x0, tt + 1, x1, tt + 5 + dy, base)
+        cv.rect(inner, tt + 1, inner, tt + 5 + dy, sh)
+        cv.rect(x0, tt + 5 + dy, x1, tt + 5 + dy, cuff or sh)
+        cv.rect(x0, tt + 6 + dy, x1, tt + 7 + dy, SKIN)
+        cv.set(x0 if x0 == 9 else x1, tt + 7 + dy, SKIN_SH)
 
 
 def draw_torso_front(cv, who, L, arm_dy, back=False):
     tt, tb = L["tt"], L["tb"]
+    base, sh, hi = TOP[who]
+    cv.rect(10, tt, 21, tt, base)
+    cv.rect(11, tt, 20, tb, base)
+    draw_arms_front(cv, L, TOP[who], B_SHIRT[0] if who == "B" else None, arm_dy)
+    cv.rect(11, tb, 20, tb, sh)
     if who == "A":
-        base, sh, hi = A_HOOD
-        cv.rect(10, tt, 21, tt, base)
-        cv.rect(11, tt, 20, tb, base)
-        draw_arms_front(cv, L, base, sh, sh, arm_dy)
-        cv.rect(11, tb, 20, tb, sh)
         if not back:
             cv.rect(11, tt, 13, tt + 1, sh)
             cv.rect(18, tt, 20, tt + 1, sh)
-            cv.rect(14, tt + 2, 14, tt + 5, A_STRING)
-            cv.rect(17, tt + 2, 17, tt + 5, A_STRING)
-            cv.rect(12, tt + 6, 19, tt + 6, sh)
-            cv.set(12, tt + 7, sh)
-            cv.set(19, tt + 7, sh)
+            cv.rect(14, tt + 1, 14, tt + 3, A_STRING)
+            cv.rect(17, tt + 1, 17, tt + 3, A_STRING)
+            cv.rect(12, tt + 5, 19, tt + 5, sh)
             cv.set(11, tt + 2, hi)
         else:
-            cv.rect(12, tt, 19, tt + 4, sh)
-            cv.rect(13, tt, 18, tt + 3, base)
-            cv.rect(13, tt + 4, 18, tt + 4, sh)
+            cv.rect(12, tt, 19, tt + 3, sh)
+            cv.rect(13, tt, 18, tt + 2, base)
     elif who == "B":
-        base, sh, hi = B_COAT
-        cv.rect(10, tt, 21, tt, base)
-        cv.rect(11, tt, 20, tb, base)
-        draw_arms_front(cv, L, base, sh, B_SHIRT[0], arm_dy)
         if not back:
             ws, wsh = B_SHIRT
             cv.rect(13, tt, 18, tt, ws)
             cv.rect(14, tt + 1, 17, tt + 1, ws)
-            cv.rect(15, tt + 2, 16, tt + 4, ws)
-            cv.set(15, tt + 4, wsh)
+            cv.rect(15, tt + 2, 16, tt + 3, ws)
+            cv.set(15, tt + 3, wsh)
             cv.set(13, tt + 1, hi)
             cv.set(18, tt + 1, hi)
             cv.set(14, tt + 2, hi)
             cv.set(17, tt + 2, hi)
-            cv.rect(15, tt + 5, 16, tb, sh)
-            cv.set(16, tt + 6, hi)
-            cv.set(16, tt + 8, hi)
+            cv.rect(15, tt + 4, 15, tb, sh)
+            cv.set(16, tt + 5, B_SHIRT[0])
         else:
             cv.rect(13, tt, 18, tt, B_SHIRT[0])
-            cv.rect(15, tt + 3, 16, tb, sh)
-        cv.rect(11, tb, 20, tb, sh)
+            cv.rect(15, tt + 2, 16, tb, sh)
     else:
-        base, sh, hi = C_CARD
-        cv.rect(10, tt, 21, tt, base)
-        cv.rect(11, tt, 20, tb, base)
-        draw_arms_front(cv, L, base, sh, sh, arm_dy)
         if not back:
             bl, bsh = C_BLOUSE
-            cv.rect(14, tt, 17, tb, bl)
             cv.rect(13, tt, 18, tt, bl)
-            cv.set(15, tt + 3, bsh)
-            cv.set(15, tt + 6, bsh)
+            cv.rect(14, tt, 17, tb - 1, bl)
+            cv.set(15, tt + 2, bsh)
+            cv.set(15, tt + 4, bsh)
             cv.rect(13, tt + 1, 13, tb, sh)
             cv.rect(18, tt + 1, 18, tb, sh)
             cv.set(12, tt + 2, hi)
-        cv.rect(11, tb, 20, tb, sh)
 
 
 def draw_legs_front(cv, who, L, raise_):
@@ -212,78 +205,77 @@ def draw_legs_front(cv, who, L, raise_):
         base, sh, hi = C_SKIRT
         n = lb - lt
         for i in range(n):
-            w = 6 + min(2, i // 3)
+            w = 6 + min(2, (i + 1) // 2)
             cv.rect(16 - w, lt + i, 15 + w, lt + i, base)
-        cv.rect(16 - 8, lt + n - 1, 15 + 8, lt + n - 1, sh)
+        cv.rect(8, lt + n - 1, 23, lt + n - 1, sh)
         cv.rect(15, lt + 1, 16, lt + n - 2, sh)
-        cv.set(11, lt + 2, hi)
-        cv.set(10, lt + 5, hi)
+        cv.set(11, lt + 1, hi)
+        cv.set(10, lt + 3, hi)
         for (x0, r) in ((12, raise_[0]), (18, raise_[1])):
             cv.rect(x0, lb - r, x0 + 1, lb - r, SKIN)
             cv.rect(x0 - 1, st - r, x0 + 2, g - r, C_SHOE[0])
             cv.set(x0, st - r, C_SHOE[1])
         return
-    pants = A_JEAN if who == "A" else B_PANTS
+    base, sh, hi = A_JEAN if who == "A" else B_PANTS
     shoe = A_SHOE if who == "A" else B_SHOE
-    base, sh, hi = pants
-    cv.rect(11, lt, 20, lt + 1, base)
+    cv.rect(11, lt, 20, lt, base)
     for (x0, r, inner) in ((11, raise_[0], 14), (17, raise_[1], 17)):
-        cv.rect(x0, lt + 2, x0 + 3, lb - r, base)
-        cv.rect(inner, lt + 2, inner, lb - r, sh)
-        cv.set(x0 + (1 if x0 == 11 else 2), lt + 3, hi)
+        cv.rect(x0, lt + 1, x0 + 3, lb - r, base)
+        cv.rect(inner, lt + 1, inner, lb - r, sh)
+        cv.set(x0 + (1 if x0 == 11 else 2), lt + 2, hi)
         cv.rect(x0, st - r, x0 + 3, g - r, shoe[0])
         cv.rect(x0, g - r, x0 + 3, g - r, shoe[1])
-    if who == "A":
-        cv.rect(11, lt, 20, lt, sh)
 
 
-# ---------------------------------------------------------------- 머리
+# ---------------------------------------------------------------- 얼굴 / 머리
 
-def draw_head_front(cv, L):
+def draw_head(cv, L):
     ht = L["ht"]
     for i, hw in enumerate(HEAD):
         cv.row(ht + i, hw, SKIN)
-    cv.row(ht + 15, 4, SKIN_SH)
+    cv.row(ht + HEAD_H - 1, HEAD[-1], SKIN_SH)
+
+
+def draw_eye(cv, x0, ey, iris, iris_d, lash_x):
+    """3x4 큰 눈. x0 = 눈의 왼쪽 끝."""
+    for x in lash_x:
+        cv.set(x, ey, LASH)
+    cv.rect(x0, ey + 1, x0 + 2, ey + 1, iris_d)
+    cv.set(x0, ey + 2, WHITE)
+    cv.set(x0 + 1, ey + 2, iris)
+    cv.set(x0 + 2, ey + 2, iris_d)
+    cv.rect(x0, ey + 3, x0 + 2, ey + 3, iris)
+    cv.set(x0 + 2, ey + 3, c("#ffffff") if False else iris)
 
 
 def draw_face_front(cv, who, cfg, L):
-    ht = L["ht"]
-    ey = ht + 9
+    ey = L["ey"]
     iris, iris_d = cfg["eye"]
-    for (x0, tail) in ((11, 10), (19, 21)):
-        cv.rect(x0, ey, x0 + 1, ey, LASH)
-        cv.set(tail, ey, LASH)
-        cv.set(x0, ey + 1, WHITE)
-        cv.set(x0 + 1, ey + 1, iris)
-        cv.set(x0, ey + 2, iris)
-        cv.set(x0 + 1, ey + 2, iris_d)
-    if cfg["blush"]:
-        cv.set(10, ey + 3, BLUSH)
-        cv.set(21, ey + 3, BLUSH)
     if who == "B":
-        cv.rect(15, ey + 4, 16, ey + 4, cfg["mouth"])
+        draw_eye(cv, 10, ey, iris, iris_d, range(10, 13))
+        draw_eye(cv, 19, ey, iris, iris_d, range(19, 22))
         # 안경 (검은 얇은 테)
-        for x0 in (10, 18):
-            for x in range(x0, x0 + 4):
-                cv.set(x, ey - 1, B_GLASS)
-                cv.set(x, ey + 3, B_GLASS)
-            for y in range(ey - 1, ey + 4):
-                cv.set(x0, y, B_GLASS)
-                cv.set(x0 + 3, y, B_GLASS)
-        cv.rect(14, ey, 17, ey, B_GLASS)
-        cv.set(9, ey, B_GLASS)
-        cv.set(22, ey, B_GLASS)
-        # 눈 위치를 안경 안쪽으로 다시 칠함
-        for (x0, tail) in ((11, None), (19, None)):
-            cv.rect(x0, ey, x0 + 1, ey, LASH)
+        for x0 in (9, 18):
+            cv.rect(x0, ey - 1, x0 + 4, ey - 1, B_GLASS)
+            cv.rect(x0, ey + 4, x0 + 4, ey + 4, B_GLASS)
+            cv.rect(x0, ey - 1, x0, ey + 4, B_GLASS)
+            cv.rect(x0 + 4, ey - 1, x0 + 4, ey + 4, B_GLASS)
+        cv.rect(14, ey + 1, 17, ey + 1, B_GLASS)
+        cv.rect(7, ey + 1, 8, ey + 1, B_GLASS)
+        cv.rect(23, ey + 1, 24, ey + 1, B_GLASS)
+        cv.rect(15, ey + 6, 16, ey + 6, cfg["mouth"])
     else:
-        cv.set(15, ey + 4, cfg["mouth"])
-        cv.set(16, ey + 4, cfg["mouth"])
+        draw_eye(cv, 10, ey, iris, iris_d, range(9, 13))
+        draw_eye(cv, 19, ey, iris, iris_d, range(19, 23))
         if who == "C":
-            cv.set(14, ey + 3, cfg["mouth"])
-            cv.set(17, ey + 3, cfg["mouth"])
-            cv.set(15, ey + 4, cfg["mouth"])
-            cv.set(16, ey + 4, cfg["mouth"])
+            cv.set(14, ey + 5, cfg["mouth"])
+            cv.set(17, ey + 5, cfg["mouth"])
+            cv.rect(15, ey + 6, 16, ey + 6, cfg["mouth"])
+        else:
+            cv.rect(15, ey + 6, 16, ey + 6, cfg["mouth"])
+    if cfg["blush"]:
+        cv.rect(8, ey + 5, 9, ey + 5, BLUSH)
+        cv.rect(22, ey + 5, 23, ey + 5, BLUSH)
 
 
 def hair_cap(cv, L, hair):
@@ -292,9 +284,9 @@ def hair_cap(cv, L, hair):
     for i, hw in enumerate(CAP):
         cv.row(ht - 1 + i, hw, base)
     # 하이라이트 (천사 링)
-    cv.rect(11, ht + 1, 13, ht + 1, hi)
-    cv.rect(18, ht + 1, 20, ht + 1, hi)
-    cv.rect(10, ht + 2, 11, ht + 2, hi)
+    cv.rect(10, ht + 2, 13, ht + 2, hi)
+    cv.rect(18, ht + 2, 21, ht + 2, hi)
+    cv.rect(8, ht + 3, 9, ht + 3, hi)
 
 
 def draw_hair_front(cv, who, cfg, L, layer):
@@ -302,66 +294,64 @@ def draw_hair_front(cv, who, cfg, L, layer):
     ht, tt = L["ht"], L["tt"]
     if layer == "back":
         if who == "A":
-            cv.rect(8, ht + 4, 23, tt + 3, base)
-            cv.rect(9, tt + 4, 22, tt + 5, sh)
+            cv.rect(6, ht + 5, 25, tt + 3, base)
+            cv.rect(7, tt + 4, 24, tt + 4, sh)
         elif who == "C":
-            cv.rect(8, ht + 4, 23, ht + 15, sh)
+            cv.rect(6, ht + 5, 25, ht + 18, sh)
         else:
-            cv.rect(9, ht + 4, 22, ht + 13, sh)
+            cv.rect(7, ht + 5, 24, ht + 17, sh)
         return
 
     hair_cap(cv, L, cfg["hair"])
-    y = ht + 6
+    y = ht + 7   # 앞머리 시작 줄
     if who == "A":
-        cv.rect(7, y, 24, y, base)
-        for x in (12, 13, 18, 19):
-            cv.set(x, y, SKIN)
-        for x in (8, 9, 10, 15, 16, 21, 22, 23):
-            cv.set(x, y + 1, base)
+        cv.rect(5, y, 26, y + 1, base)
+        for x in (10, 11, 20, 21):
+            cv.set(x, y + 1, SKIN)
+        for x in (7, 8, 13, 14, 17, 18, 23, 24):
+            cv.set(x, y + 2, base)
         cv.rect(14, y, 17, y, sh)
-        # 양옆으로 흘러내리는 머리 (어깨 아래까지)
-        for (x0, x1, ish) in ((7, 9, 9), (22, 24, 22)):
+        # 어깨 아래까지 흘러내리는 옆머리
+        for (x0, x1, ish) in ((5, 7, 7), (24, 26, 24)):
             cv.rect(x0, y, x1, tt + 4, base)
-            cv.rect(ish, y + 2, ish, tt + 4, sh)
-        cv.rect(7, tt + 5, 8, tt + 5, base)
-        cv.rect(23, tt + 5, 24, tt + 5, base)
-        cv.set(8, ht + 8, hi)
-        cv.set(23, ht + 8, hi)
+            cv.rect(ish, y + 3, ish, tt + 4, sh)
+        cv.rect(5, tt + 5, 6, tt + 5, base)
+        cv.rect(25, tt + 5, 26, tt + 5, base)
+        cv.set(6, ht + 10, hi)
+        cv.set(25, ht + 10, hi)
     elif who == "B":
-        cv.rect(7, y, 24, y, base)
-        for x in (11, 12, 13, 19, 20):
-            cv.set(x, y, SKIN)
-        for x in (8, 14, 15, 16, 22, 23):
-            cv.set(x, y + 1, base)
-        cv.set(15, y + 2, base)
-        cv.rect(14, y - 1, 16, y, sh)
-        # 얼굴을 감싸는 옆머리 (가늘게) + 삐져나온 잔머리
-        cv.rect(7, y, 8, ht + 14, base)
-        cv.rect(23, y, 24, ht + 14, base)
-        cv.set(8, ht + 15, base)
-        cv.set(23, ht + 15, base)
-        cv.rect(8, y + 2, 8, ht + 13, sh)
-        cv.rect(23, y + 2, 23, ht + 13, sh)
+        cv.rect(5, y, 26, y, base)
+        cv.rect(5, y + 1, 9, y + 1, base)
+        cv.rect(13, y + 1, 18, y + 1, base)
+        cv.rect(22, y + 1, 26, y + 1, base)
+        for x in (6, 14, 15, 17, 24):
+            cv.set(x, y + 2, base)
+        cv.set(15, y + 3, base)
+        cv.rect(13, y - 1, 17, y, sh)
+        # 얼굴을 감싸는 가는 옆머리 + 삐져나온 잔머리
+        cv.rect(5, y, 6, ht + 18, base)
+        cv.rect(25, y, 26, ht + 18, base)
+        cv.rect(6, y + 3, 6, ht + 17, sh)
+        cv.rect(25, y + 3, 25, ht + 17, sh)
         cv.set(17, ht - 2, base)
         cv.set(18, ht - 3, base)
-        cv.set(25, ht + 3, base)
-        cv.set(6, ht + 10, base)
+        cv.set(19, ht - 3, base)
+        cv.set(27, ht + 4, base)
+        cv.set(4, ht + 12, base)
     else:
-        cv.rect(7, y, 24, y + 1, base)
-        for x in (11, 15, 20):
-            cv.set(x, y + 1, SKIN)
-        cv.rect(10, y + 1, 21, y + 1, sh)
-        for x in (11, 15, 20):
-            cv.set(x, y + 1, SKIN)
+        cv.rect(5, y, 26, y + 2, base)
+        cv.rect(8, y + 2, 23, y + 2, sh)
+        for x in (10, 15, 16, 21):
+            cv.set(x, y + 2, SKIN)
         # 턱선까지 오는 단발
-        cv.rect(7, y, 9, ht + 14, base)
-        cv.rect(22, y, 24, ht + 14, base)
-        cv.rect(8, ht + 15, 10, ht + 15, base)
-        cv.rect(21, ht + 15, 23, ht + 15, base)
-        cv.rect(9, y + 2, 9, ht + 14, sh)
-        cv.rect(22, y + 2, 22, ht + 14, sh)
-        cv.set(8, ht + 8, hi)
-        cv.set(23, ht + 8, hi)
+        cv.rect(5, y, 7, ht + 18, base)
+        cv.rect(24, y, 26, ht + 18, base)
+        cv.rect(6, ht + 19, 8, ht + 19, base)
+        cv.rect(23, ht + 19, 25, ht + 19, base)
+        cv.rect(7, y + 3, 7, ht + 18, sh)
+        cv.rect(24, y + 3, 24, ht + 18, sh)
+        cv.set(6, ht + 11, hi)
+        cv.set(25, ht + 11, hi)
 
 
 def draw_hair_back(cv, who, cfg, L):
@@ -370,64 +360,56 @@ def draw_hair_back(cv, who, cfg, L):
     ht, tt = L["ht"], L["tt"]
     for i, hw in enumerate(CAP):
         cv.row(ht - 1 + i, hw, base)
-    for i, hw in enumerate(HEAD[6:]):
-        cv.row(ht + 6 + i, hw + 1, base)
-    cv.rect(11, ht + 1, 13, ht + 1, hi)
-    cv.rect(18, ht + 1, 20, ht + 1, hi)
+    for i, hw in enumerate(HEAD[7:]):
+        cv.row(ht + 7 + i, hw + 1, base)
+    cv.rect(10, ht + 2, 13, ht + 2, hi)
+    cv.rect(18, ht + 2, 21, ht + 2, hi)
     if who == "A":
-        cv.rect(7, ht + 6, 24, tt + 4, base)
-        cv.rect(8, tt + 5, 23, tt + 5, base)
-        for x in (11, 15, 16, 20):
-            cv.rect(x, ht + 8, x, tt + 4, sh)
+        cv.rect(5, ht + 7, 26, tt + 4, base)
+        cv.rect(6, tt + 5, 25, tt + 5, base)
+        for x in (10, 15, 16, 21):
+            cv.rect(x, ht + 9, x, tt + 4, sh)
     elif who == "B":
-        cv.rect(14, ht + 10, 17, ht + 15, sh)
-        cv.rect(14, ht + 11, 17, ht + 11, c("#5c6672"))
-        cv.rect(14, ht + 12, 17, tt + 6, base)
-        cv.rect(15, tt + 7, 16, tt + 9, base)
-        cv.rect(15, ht + 13, 15, tt + 8, sh)
-        # 검은 마이에 묻히지 않게 포니테일 테두리를 밝게
-        cv.rect(13, ht + 13, 13, tt + 5, hi)
-        cv.rect(18, ht + 13, 18, tt + 5, hi)
-        cv.rect(14, tt + 7, 14, tt + 8, hi)
-        cv.rect(17, tt + 7, 17, tt + 8, hi)
-        cv.rect(16, ht + 13, 16, tt + 7, hi)
+        cv.rect(14, ht + 13, 17, ht + 13, B_TIE)
+        cv.rect(14, ht + 14, 17, tt + 4, base)
+        cv.rect(15, tt + 5, 16, tt + 7, base)
+        cv.rect(15, ht + 15, 15, tt + 6, sh)
+        cv.rect(16, ht + 15, 16, tt + 5, hi)
         cv.set(17, ht - 2, base)
         cv.set(18, ht - 3, base)
+        cv.set(19, ht - 3, base)
     else:
-        cv.rect(8, ht + 15, 23, ht + 15, base)
-        cv.rect(9, ht + 16, 22, ht + 16, base)
-        for x in (12, 16, 19):
-            cv.rect(x, ht + 8, x, ht + 15, sh)
+        cv.rect(6, ht + 19, 25, ht + 19, base)
+        cv.rect(8, ht + 20, 23, ht + 20, base)
+        for x in (11, 16, 20):
+            cv.rect(x, ht + 9, x, ht + 19, sh)
 
 
 # ---------------------------------------------------------------- 옆모습 (왼쪽을 봄)
 
 def draw_side(cv, who, cfg, L, step):
     """step: 0 = 서 있기, 1/2 = 걷기"""
-    base_h, sh_h, hi_h = cfg["hair"]
-    ht, tt, tb = L["ht"], L["tt"], L["tb"]
+    hb, hs, hh = cfg["hair"]
+    ht, tt, tb, ey = L["ht"], L["tt"], L["tb"], L["ey"]
     lt, lb, st, g = L["leg_top"], L["leg_bot"], L["shoe_top"], L["ground"]
 
-    # 뒤쪽 머리 (몸 뒤로)
+    # 몸 뒤로 넘어가는 머리
     if who == "A":
-        cv.rect(17, ht + 4, 23, tt + 4, base_h)
-        cv.rect(18, tt + 5, 22, tt + 5, sh_h)
+        cv.rect(16, ht + 5, 25, tt + 4, hb)
+        cv.rect(17, tt + 5, 24, tt + 5, hs)
     elif who == "B":
-        tie = c("#5c6672")
-        cv.rect(22, ht + 9, 24, ht + 10, base_h)
-        cv.set(23, ht + 11, tie)
-        cv.set(24, ht + 11, tie)
-        cv.rect(23, ht + 12, 25, tt + 5, base_h)
-        cv.rect(24, tt + 6, 24, tt + 8, base_h)
-        cv.rect(25, ht + 13, 25, tt + 4, sh_h)
+        cv.rect(23, ht + 11, 26, ht + 12, hb)
+        cv.rect(24, ht + 13, 26, ht + 13, B_TIE)
+        cv.rect(24, ht + 14, 27, tt + 3, hb)
+        cv.rect(25, tt + 4, 26, tt + 6, hb)
+        cv.rect(25, ht + 15, 25, tt + 3, hh)
 
     # 다리 / 치마
-    far = 0 if step == 0 else (1 if step == 1 else 2)
     if who == "C":
         base, sh, hi = C_SKIRT
         n = lb - lt
         for i in range(n):
-            w = min(2, i // 3)
+            w = min(2, (i + 1) // 2)
             cv.rect(12 - w, lt + i, 19 + w, lt + i, base)
         cv.rect(10, lt + n - 1, 21, lt + n - 1, sh)
         cv.rect(17, lt + 1, 18, lt + n - 2, sh)
@@ -441,101 +423,89 @@ def draw_side(cv, who, cfg, L, step):
             cv.rect(fx, lb, fx + 1, lb, SKIN)
             cv.rect(fx - 1, st, fx + 2, g, C_SHOE[0])
     else:
-        pants = A_JEAN if who == "A" else B_PANTS
+        base, sh, hi = A_JEAN if who == "A" else B_PANTS
         shoe = A_SHOE if who == "A" else B_SHOE
-        base, sh, hi = pants
-        cv.rect(13, lt, 18, lt + 1, base)
+        cv.rect(13, lt, 18, lt, base)
         if step == 0:
             cv.rect(14, lt, 17, lb, base)
-            cv.rect(17, lt + 2, 17, lb, sh)
+            cv.rect(17, lt + 1, 17, lb, sh)
             cv.rect(12, st, 17, g, shoe[0])
             cv.rect(12, g, 17, g, shoe[1])
         else:
             d = 2 if step == 1 else 1
-            # 뒤쪽 다리 (어둡게)
-            cv.rect(16 + d - 1, lt + 2, 19 + d - 1, lb, sh)
-            cv.rect(16 + d - 1, st, 20 + d - 1, g, shoe[1])
-            # 앞쪽 다리
-            cv.rect(13 - d + 1, lt + 2, 16 - d + 1, lb, base)
-            cv.rect(11 - d + 1, st, 16 - d + 1, g, shoe[0])
-            cv.rect(11 - d + 1, g, 16 - d + 1, g, shoe[1])
+            cv.rect(15 + d, lt + 1, 18 + d, lb, sh)          # 뒤쪽 다리
+            cv.rect(15 + d, st, 19 + d, g, shoe[1])
+            cv.rect(14 - d, lt + 1, 17 - d, lb, base)        # 앞쪽 다리
+            cv.rect(12 - d, st, 17 - d, g, shoe[0])
+            cv.rect(12 - d, g, 17 - d, g, shoe[1])
 
     # 몸통
-    if who == "A":
-        base, sh, hi = A_HOOD
-    elif who == "B":
-        base, sh, hi = B_COAT
-    else:
-        base, sh, hi = C_CARD
+    base, sh, hi = TOP[who]
     cv.rect(12, tt, 19, tb, base)
     cv.rect(12, tb, 19, tb, sh)
     if who == "A":
         cv.rect(17, tt, 20, tt + 2, sh)
-        cv.rect(12, tt + 1, 12, tt + 4, A_STRING)
+        cv.rect(12, tt + 1, 12, tt + 3, A_STRING)
     elif who == "B":
-        cv.rect(12, tt, 12, tt + 3, B_SHIRT[0])
-        cv.rect(13, tt, 13, tt + 4, hi)
+        cv.rect(12, tt, 12, tt + 2, B_SHIRT[0])
+        cv.rect(13, tt, 13, tt + 3, hi)
     else:
         cv.rect(12, tt, 12, tb - 1, C_BLOUSE[0])
         cv.rect(13, tt, 13, tb - 1, sh)
 
     # 팔 (흔들기)
     ax = 15 + (0 if step == 0 else (-1 if step == 1 else 1))
-    cv.rect(ax, tt + 1, ax + 2, tt + 8, base)
-    cv.rect(ax + 2, tt + 2, ax + 2, tt + 8, sh)
+    cv.rect(ax, tt + 1, ax + 2, tt + 5, base)
+    cv.rect(ax + 2, tt + 2, ax + 2, tt + 5, sh)
     if who == "B":
-        cv.rect(ax, tt + 8, ax + 2, tt + 8, B_SHIRT[0])
-    cv.rect(ax, tt + 9, ax + 2, tt + 10, SKIN)
-    cv.set(ax + 2, tt + 10, SKIN_SH)
+        cv.rect(ax, tt + 5, ax + 2, tt + 5, B_SHIRT[0])
+    cv.rect(ax, tt + 6, ax + 2, tt + 7, SKIN)
+    cv.set(ax + 2, tt + 7, SKIN_SH)
 
-    # 머리통
-    for i, hw in enumerate(HEAD):
-        cv.row(ht + i, hw, SKIN)
-    cv.row(ht + 15, 4, SKIN_SH)
-    ey = ht + 9
+    # 머리통 + 얼굴
+    draw_head(cv, L)
     iris, iris_d = cfg["eye"]
-    cv.rect(10, ey, 11, ey, LASH)
-    cv.set(12, ey, LASH)
-    cv.set(10, ey + 1, iris)
-    cv.set(11, ey + 1, WHITE)
-    cv.set(10, ey + 2, iris_d)
-    cv.set(11, ey + 2, iris)
-    cv.set(9, ey + 4, cfg["mouth"])
+    cv.rect(7, ey, 10, ey, LASH)
+    cv.rect(7, ey + 1, 9, ey + 1, iris_d)
+    cv.set(7, ey + 2, iris)
+    cv.set(8, ey + 2, WHITE)
+    cv.set(9, ey + 2, iris_d)
+    cv.rect(7, ey + 3, 9, ey + 3, iris)
+    cv.set(7, ey + 6, cfg["mouth"])
     if cfg["blush"]:
-        cv.set(12, ey + 3, BLUSH)
+        cv.rect(10, ey + 5, 11, ey + 5, BLUSH)
 
     # 머리카락
     hair_cap(cv, L, cfg["hair"])
-    y = ht + 6
+    y = ht + 7
     if who == "A":
-        cv.rect(14, y, 24, tt + 1, base_h)
-        cv.rect(8, y, 13, y, base_h)
-        cv.set(8, y + 1, base_h)
-        cv.set(9, y + 1, base_h)
-        cv.rect(16, y + 2, 16, tt + 1, sh_h)
+        cv.rect(14, y, 26, tt + 1, hb)
+        cv.rect(6, y, 13, y + 1, hb)
+        cv.set(9, y + 1, SKIN)
+        cv.rect(6, y + 2, 7, y + 2, hb)
+        cv.rect(16, y + 3, 16, tt + 1, hs)
     elif who == "B":
-        cv.rect(15, y, 24, ht + 12, base_h)
-        cv.rect(8, y, 13, y, base_h)
-        cv.set(8, y + 1, base_h)
-        cv.set(13, y + 1, base_h)
-        cv.rect(16, ey + 1, 17, ey + 2, SKIN_SH)
-        cv.set(17, ht - 2, base_h)
-        cv.set(18, ht - 3, base_h)
+        cv.rect(15, y, 25, ht + 15, hb)
+        cv.rect(6, y, 13, y, hb)
+        cv.rect(6, y + 1, 8, y + 1, hb)
+        cv.set(12, y + 1, hb)
+        cv.rect(16, ey + 1, 17, ey + 3, SKIN_SH)
+        cv.set(17, ht - 2, hb)
+        cv.set(18, ht - 3, hb)
+        cv.set(19, ht - 3, hb)
         # 안경
-        for x in range(9, 13):
-            cv.set(x, ey - 1, B_GLASS)
-            cv.set(x, ey + 3, B_GLASS)
-        for yy in range(ey - 1, ey + 4):
-            cv.set(9, yy, B_GLASS)
-            cv.set(12, yy, B_GLASS)
-        cv.rect(13, ey, 16, ey, B_GLASS)
-        cv.rect(10, ey, 11, ey, LASH)
+        cv.rect(6, ey - 1, 10, ey - 1, B_GLASS)
+        cv.rect(6, ey + 4, 10, ey + 4, B_GLASS)
+        cv.rect(10, ey - 1, 10, ey + 4, B_GLASS)
+        cv.rect(6, ey - 1, 6, ey + 4, B_GLASS)
+        cv.rect(11, ey + 1, 16, ey + 1, B_GLASS)
     else:
-        cv.rect(14, y, 24, ht + 14, base_h)
-        cv.rect(15, ht + 15, 23, ht + 15, base_h)
-        cv.rect(8, y, 13, y + 1, base_h)
-        cv.set(10, y + 1, SKIN)
-        cv.rect(16, y + 2, 16, ht + 14, sh_h)
+        cv.rect(14, y, 26, ht + 18, hb)
+        cv.rect(15, ht + 19, 25, ht + 19, hb)
+        cv.rect(6, y, 13, y + 2, hb)
+        cv.rect(8, y + 2, 13, y + 2, hs)
+        cv.set(10, y + 2, SKIN)
+        cv.rect(16, y + 3, 16, ht + 18, hs)
 
 
 # ---------------------------------------------------------------- 프레임 조립
@@ -551,7 +521,7 @@ def frame(who, direction, col):
             draw_hair_front(cv, who, cfg, L, "back")
             draw_legs_front(cv, who, L, raise_)
             draw_torso_front(cv, who, L, arm_dy)
-            draw_head_front(cv, L)
+            draw_head(cv, L)
             draw_face_front(cv, who, cfg, L)
             draw_hair_front(cv, who, cfg, L, "front")
         else:
@@ -559,8 +529,7 @@ def frame(who, direction, col):
             draw_torso_front(cv, who, L, arm_dy, back=True)
             draw_hair_back(cv, who, cfg, L)
     else:
-        step = [1, 0, 2][col]
-        draw_side(cv, who, cfg, L, step)
+        draw_side(cv, who, cfg, L, [1, 0, 2][col])
     cv.outline()
     img = cv.image()
     if direction == "right":
@@ -593,20 +562,19 @@ def main():
 
     scale = 6
     # 정면 / 옆 / 뒤 미리보기
-    prev = background(W * 3 * 3 + 16, H + 8)
+    prev = background(W * 3 * 3 + 16, H + 4)
     for i, who in enumerate(CHARS):
         for j, d in enumerate(("down", "left", "up")):
-            spr = frame(who, d, 1)
-            prev.alpha_composite(spr, (i * (W * 3 + 8) + j * W, 4))
+            prev.alpha_composite(frame(who, d, 1), (i * (W * 3 + 8) + j * W, 0))
     prev.resize((prev.width * scale, prev.height * scale), Image.NEAREST).save(OUT / "preview.png")
 
     # 걷기 애니메이션 GIF
     frames = []
     for col in (0, 1, 2, 1):
-        f = background(W * 6 + 8, H * 2 + 8)
+        f = background(W * 6 + 8, H * 2 + 4)
         for i, who in enumerate(CHARS):
-            f.alpha_composite(frame(who, "down", col), (i * W, 4))
-            f.alpha_composite(frame(who, "left", col), (W * 3 + 8 + i * W, 4))
+            f.alpha_composite(frame(who, "down", col), (i * W, 0))
+            f.alpha_composite(frame(who, "left", col), (W * 3 + 8 + i * W, 0))
             f.alpha_composite(frame(who, "up", col), (i * W, H + 4))
             f.alpha_composite(frame(who, "right", col), (W * 3 + 8 + i * W, H + 4))
         frames.append(f.resize((f.width * scale, f.height * scale), Image.NEAREST).convert("RGB"))
