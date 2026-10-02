@@ -556,6 +556,7 @@ def background(w, h):
 
 
 PORTRAIT_OUT = OUT.parent.parent / "portraits"
+STANDING_OUT = OUT.parent.parent / "standing"
 
 
 def portrait(who):
@@ -568,9 +569,12 @@ def portrait(who):
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     PORTRAIT_OUT.mkdir(parents=True, exist_ok=True)
+    STANDING_OUT.mkdir(parents=True, exist_ok=True)
     for who in CHARS:
         sheet(who).save(OUT / f"{who}_test.png")
         portrait(who).save(PORTRAIT_OUT / f"{who}.png")
+        # 임시 스탠딩 일러: 정면 도트 한 칸 그대로 (게임에서 크게 키워서 보여준다)
+        frame(who, "down", 1).save(STANDING_OUT / f"{who}.png")
 
     scale = 6
     # 정면 / 옆 / 뒤 미리보기

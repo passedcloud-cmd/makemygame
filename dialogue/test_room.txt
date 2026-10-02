@@ -2,13 +2,20 @@
 # 문법 설명은 dialogue/README.md 참고
 
 == intro
+@fade out 0
 ...눈을 떠 보니, 처음 보는 방이었다.
+@fade in 1.0
+@show A left
 A: 여긴... 어디지?
 A: (분명 방금 전까지 내 방 침대에 누워 있었는데.)
+@show B right
 B: 일어났네. 한참 기다렸어.
+@shake 5 0.4
 A(surprised): 으악! 누, 누구세요?!
 B: 그렇게까지 놀랄 건 없잖아. 나도 여기 갇힌 처지야.
+@show C center
 C(smile): 둘 다 진정하고, 일단 주변부터 둘러보자.
+@hide all
 [color=#a59cb5](방향키로 움직이고, 물건 앞에서 Z 키를 눌러 조사할 수 있다.)[/color]
 
 == box
@@ -42,15 +49,28 @@ end
 
 == drawing
 상자 위에 크레파스로 그린 그림이 붙어 있다.
+@cg crayon_drawing
 두 아이가 손을 잡고 웃고 있는 그림이다.
+@flashback on
+@wait 0.5
+???: 우리, 커서도 계속 같이 놀자.
+???: 응! 약속!
+@flashback off
+@cg off
 A: ......
 A: (왜인지 모르게, 낯이 익다.)
+@show B right
 B: ......
+@hide all
 end
 
 == room2_intro
 방 안의 공기가 서늘하다.
+@show B left
 B: ...저기. 뭔가 움직였어.
+@hide all
+@cutin C
+@shake 3 0.3
 C: 그림자...? 이쪽으로 오는 것 같아!
 A: (가까이 오면 쫓아내야 해.)
 [color=#a59cb5](Z 키로 공격할 수 있다. 조사할 물건 앞에서는 조사가 우선이다.)[/color]

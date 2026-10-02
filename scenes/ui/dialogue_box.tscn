@@ -2,6 +2,12 @@
 
 [ext_resource type="Script" path="res://scripts/dialogue/dialogue_box.gd" id="1_box"]
 [ext_resource type="FontFile" path="res://art/fonts/galmuri/Galmuri11-Bold.ttf" id="2_bold"]
+[ext_resource type="Script" path="res://scripts/dialogue/stage.gd" id="3_stage"]
+[ext_resource type="Shader" path="res://shaders/flashback.gdshader" id="4_flashback"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flashback"]
+shader = ExtResource("4_flashback")
+shader_parameter/amount = 0.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_text"]
 content_margin_left = 10.0
@@ -74,7 +80,47 @@ offset_right = 640.0
 offset_bottom = 360.0
 mouse_filter = 2
 
+[node name="Stage" type="Control" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+script = ExtResource("3_stage")
+
+[node name="Standing" type="Control" parent="Root/Stage"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+
+[node name="CG" type="TextureRect" parent="Root/Stage"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Flashback" type="ColorRect" parent="Root/Stage"]
+material = SubResource("ShaderMaterial_flashback")
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+
+[node name="Fade" type="ColorRect" parent="Root/Stage"]
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+color = Color(0.02, 0.016, 0.03, 0)
+
 [node name="TextPanel" type="PanelContainer" parent="Root"]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 16.0
 offset_top = 270.0
@@ -149,3 +195,59 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_choice")
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 4
+
+[node name="Cutin" type="Control" parent="Root"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+
+[node name="CutinBand" type="Control" parent="Root/Cutin"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = -60.0
+offset_top = 96.0
+offset_right = 700.0
+offset_bottom = 200.0
+rotation = -0.1
+pivot_offset = Vector2(380, 52)
+mouse_filter = 2
+
+[node name="CutinBg" type="ColorRect" parent="Root/Cutin/CutinBand"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 760.0
+offset_bottom = 104.0
+mouse_filter = 2
+color = Color(0.3, 0.35, 0.45, 1)
+
+[node name="EdgeTop" type="ColorRect" parent="Root/Cutin/CutinBand"]
+layout_mode = 0
+offset_top = 4.0
+offset_right = 760.0
+offset_bottom = 6.0
+mouse_filter = 2
+color = Color(0.95, 0.93, 0.89, 0.8)
+
+[node name="EdgeBottom" type="ColorRect" parent="Root/Cutin/CutinBand"]
+layout_mode = 0
+offset_top = 98.0
+offset_right = 760.0
+offset_bottom = 100.0
+mouse_filter = 2
+color = Color(0.95, 0.93, 0.89, 0.8)
+
+[node name="CutinFace" type="TextureRect" parent="Root/Cutin/CutinBand"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 316.0
+offset_top = -12.0
+offset_right = 444.0
+offset_bottom = 116.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5

@@ -54,3 +54,22 @@ if affection_b >= 2 -> b_event     # 조건이 맞으면 그 블록으로 이동
 - **물건 조사**: 맵에 `scenes/props/interactable.tscn`을 놓고, 인스펙터에서 `Dialogue File`과 `Block`을 정한다.
 - **방에 들어오자마자 대화**: 방(Room)의 `Intro Dialogue`, `Intro Block`을 정한다.
 - **코드에서**: `Dialogue.start("res://dialogue/파일.txt", "블록이름")`
+
+## 연출 (@로 시작하는 줄)
+
+| 명령 | 하는 일 | 예시 |
+|---|---|---|
+| `@show 캐릭터 위치 표정` | 스탠딩 일러 등장. 위치는 `left` / `center` / `right`, 표정은 생략 가능 | `@show B right smile` |
+| `@hide 캐릭터` | 스탠딩 일러 퇴장. `all`이면 전부 | `@hide all` |
+| `@shake 세기 시간` | 화면 흔들기 (기본 4, 0.4초) | `@shake 6 0.5` |
+| `@flashback on` / `off` | 회상 장면 (빛바랜 세피아 톤) | |
+| `@cg 이름` / `@cg off` | 한 장짜리 일러스트. `art/cg/이름.png` | `@cg crayon_drawing` |
+| `@cutin 캐릭터 표정` | 띠가 화면을 가로지르는 컷인 | `@cutin C` |
+| `@fade out 시간` / `@fade in 시간` | 암전 / 밝아지기 (기본 0.5초) | `@fade out 1` |
+| `@wait 시간` | 잠깐 멈춤 | `@wait 0.5` |
+
+- 스탠딩 일러로 서 있는 캐릭터가 말하면 대화창의 얼굴 그림은 숨겨지고, 나머지 서 있는 캐릭터는 살짝 어두워진다.
+- `B(smile): 대사`처럼 표정을 쓰면 서 있는 스탠딩 일러의 표정도 같이 바뀐다.
+- 스탠딩 일러는 `art/standing/` 폴더. 파일 이름 규칙은 얼굴 그림과 같다 (`B.png`, `B_smile.png`).
+  그림 크기는 상관없이 화면에서 같은 높이로 맞춰서 보여준다. 고해상도로 그려서 넣으면 된다.
+- 대화가 끝나면 스탠딩, CG, 회상 효과는 자동으로 정리된다.

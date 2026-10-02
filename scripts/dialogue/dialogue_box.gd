@@ -22,8 +22,11 @@ var _type_time := 0.0
 var _choices: Array = []
 var _selected := 0
 var _blink := 0.0
+var _busy := false        # 시간이 걸리는 연출(암전, 컷인 등)을 기다리는 중
 
 @onready var _root: Control = $Root
+@onready var _stage: Control = %Stage
+@onready var _text_panel: PanelContainer = %TextPanel
 @onready var _name_tag: PanelContainer = %NameTag
 @onready var _name_label: Label = %NameLabel
 @onready var _portrait_frame: Control = %PortraitFrame
@@ -47,11 +50,15 @@ func start(path: String, block: String) -> void:
 		return
 	active = true
 	_root.visible = true
+	# 첫 대사가 나올 때까지는 대화창을 숨겨 둔다 (연출부터 시작할 수 있게)
+	_text_panel.visible = false
+	_name_tag.visible = false
+	_next_mark.visible = false
 	_next()
 
 
 func _process(delta: float) -> void:
-	if not active:
+	if not active or _busy:
 		return
 	if _typing:
 		_type_time += delta
@@ -73,6 +80,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not active or not event.is_action_pressed("confirm"):
 		return
 	get_viewport().set_input_as_handled()
+	if _busy:
+		return
 	if _typing:
 		_finish_typing()
 	elif not _choices.is_empty():
@@ -107,6 +116,11 @@ func _next() -> void:
 			"if":
 				if _check(cmd) and not _goto(cmd.target):
 					return
+			"stage":
+				_busy = true
+				_next_mark.visible = false
+				await _stage.run(cmd.command, cmd.args)
+				_busy = false
 			"end":
 				_close()
 				return
@@ -125,13 +139,20 @@ func _goto(block: String) -> bool:
 func _show_line(cmd: Dictionary) -> void:
 	var speaker: String = cmd.speaker
 	var is_narration := speaker.is_empty()
+	_text_panel.visible = true
+	if not cmd.expression.is_empty():
+		_stage.set_expression(speaker, cmd.expression)
+	var on_stage: bool = _stage.on_speaker(speaker)
 	_name_tag.visible = not is_narration
 	if not is_narration:
 		_name_label.text = Characters.display_name(speaker)
 		var style := _name_tag.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
 		style.bg_color = Characters.color(speaker)
 		_name_tag.add_theme_stylebox_override("panel", style)
-	var face := Characters.portrait(speaker, cmd.expression) if not is_narration else null
+	# 스탠딩 일러로 서 있는 캐릭터는 대화창 얼굴을 따로 보여주지 않는다.
+	var face: Texture2D = null
+	if not is_narration and not on_stage:
+		face = Characters.portrait(speaker, cmd.expression)
 	_portrait.texture = face
 	_portrait_frame.visible = face != null
 
@@ -198,6 +219,8 @@ func _check(cmd: Dictionary) -> bool:
 
 func _close() -> void:
 	_hide_choices()
+	_stage.clear()
+	_busy = false
 	_typing = false
 	_root.visible = false
 	if active:

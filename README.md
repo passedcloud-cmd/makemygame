@@ -38,6 +38,8 @@ Godot 4로 만들고 스팀 출시를 목표로 한다.
 art/
   sprites/test/   임시 캐릭터 도트 (A, B, C) - 나중에 직접 그린 걸로 교체
   portraits/      대화창 얼굴 그림 (A.png, A_smile.png ...)
+  standing/       스탠딩 일러 (지금은 도트 임시 그림, 고해상도로 교체 가능)
+  cg/             한 장짜리 일러스트 (회상 장면 등)
   tiles/test/     임시 바닥, 벽, 상자
   fonts/galmuri/  한글 도트 폰트 (갈무리11, OFL 라이선스 - 상업 게임에 써도 됨)
 dialogue/         대본 파일 (.txt). 쓰는 법은 dialogue/README.md

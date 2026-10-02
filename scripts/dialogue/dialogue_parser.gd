@@ -69,6 +69,13 @@ static func _parse_line(line: String) -> Dictionary:
 	if line == "end":
 		return {"type": "end"}
 
+	# @연출명령 인자1 인자2 ...  (예: @show A left smile)
+	if line.begins_with("@"):
+		var words := line.substr(1).split(" ", false)
+		if words.is_empty():
+			return {}
+		return {"type": "stage", "command": words[0], "args": words.slice(1)}
+
 	# set 변수 + 1
 	if line.begins_with("set "):
 		var p := line.substr(4).split(" ", false)
