@@ -1,0 +1,4 @@
+# 줄바꿈을 통일해서 윈도우/맥에서 같이 작업해도 문제 없게
+* text=auto eol=lf
+*.png binary
+*.gif binary

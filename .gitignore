@@ -1,0 +1,11 @@
+# Godot 4가 자동으로 만드는 캐시 폴더 (올리면 안 됨)
+.godot/
+/android/
+
+# 운영체제 잡파일
+.DS_Store
+Thumbs.db
+
+# 빌드 결과물
+/build/
+/export/

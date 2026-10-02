@@ -566,7 +566,7 @@ def main():
     for i, who in enumerate(CHARS):
         for j, d in enumerate(("down", "left", "up")):
             prev.alpha_composite(frame(who, d, 1), (i * (W * 3 + 8) + j * W, 0))
-    prev.resize((prev.width * scale, prev.height * scale), Image.NEAREST).save(OUT / "preview.png")
+    prev.resize((prev.width * scale, prev.height * scale), Image.NEAREST).save(OUT / "preview" / "preview.png")
 
     # 걷기 애니메이션 GIF
     frames = []
@@ -578,7 +578,7 @@ def main():
             f.alpha_composite(frame(who, "up", col), (i * W, H + 4))
             f.alpha_composite(frame(who, "right", col), (W * 3 + 8 + i * W, H + 4))
         frames.append(f.resize((f.width * scale, f.height * scale), Image.NEAREST).convert("RGB"))
-    frames[0].save(OUT / "walk.gif", save_all=True, append_images=frames[1:], duration=180, loop=0)
+    frames[0].save(OUT / "preview" / "walk.gif", save_all=True, append_images=frames[1:], duration=180, loop=0)
 
 
 if __name__ == "__main__":
