@@ -3,6 +3,8 @@
 누군가의 무의식 세계에 갇힌 세 사람이 현실로 돌아가기 위해 탐험하는 탑다운 스토리 게임.
 Godot 4로 만들고 스팀 출시를 목표로 한다.
 
+기획 내용은 [docs/GDD.md](docs/GDD.md)에 정리되어 있다.
+
 ## 실행 방법
 
 1. [Godot 4.7 이상](https://godotengine.org/download) 표준(Standard) 버전을 받는다. (.NET 버전은 필요 없음)
@@ -43,6 +45,7 @@ art/
   tiles/test/     임시 바닥, 벽, 상자
   fonts/galmuri/  한글 도트 폰트 (갈무리11, OFL 라이선스 - 상업 게임에 써도 됨)
 dialogue/         대본 파일 (.txt). 쓰는 법은 dialogue/README.md
+docs/             기획 문서 (GDD.md)
 scenes/
   characters/     player.tscn (주인공), follower.tscn (따라오는 동료)
   maps/           맵 장면들, 문(door.tscn). test_room*.tscn = 테스트용 방
