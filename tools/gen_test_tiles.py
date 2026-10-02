@@ -16,8 +16,8 @@ def c(h):
 
 
 def floor():
-    """파스텔 톤 마룻바닥 (32x32, 이어 붙이면 무늬가 자연스럽게 이어짐)."""
-    base, line, light = c("#f3e3c8"), c("#e2ccaa"), c("#fbf1de")
+    """어둑한 마룻바닥 (32x32, 이어 붙이면 무늬가 자연스럽게 이어짐)."""
+    base, line, light = c("#4e4450"), c("#3b333e"), c("#5b505d")
     img = Image.new("RGBA", (32, 32), base)
     for y in (0, 16):
         for x in range(32):
@@ -31,7 +31,7 @@ def floor():
 
 def wall():
     """벽면 (32x32). 위쪽은 몰딩, 아래쪽은 걸레받이."""
-    base, sh, hi = c("#c9dff0"), c("#a9c4dc"), c("#e4f0fa")
+    base, sh, hi = c("#36405a"), c("#262d42"), c("#4d5874")
     img = Image.new("RGBA", (32, 32), base)
     for x in range(32):
         img.putpixel((x, 0), hi)
@@ -46,7 +46,7 @@ def wall():
 
 def box():
     """나무 상자 (32x40). 아래 32px가 바닥에 닿는 부분."""
-    base, sh, hi, dark = c("#d9a066"), c("#b07a45"), c("#f0c38c"), c("#6e4524")
+    base, sh, hi, dark = c("#8a6748"), c("#6b4e36"), c("#a5805c"), c("#33241a")
     img = Image.new("RGBA", (32, 40), (0, 0, 0, 0))
     for y in range(4, 40):
         for x in range(2, 30):
