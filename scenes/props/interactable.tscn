@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/props/interactable.gd" id="1_interact"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_area"]
+size = Vector2(32, 28)
+
+[node name="Interactable" type="Area2D"]
+script = ExtResource("1_interact")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -10)
+shape = SubResource("RectangleShape2D_area")

@@ -1,0 +1,150 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_box.gd" id="1_box"]
+[ext_resource type="FontFile" path="res://art/fonts/galmuri/Galmuri11-Bold.ttf" id="2_bold"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_text"]
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 0.992, 0.965, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.396, 0.325, 0.463, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_name"]
+content_margin_left = 8.0
+content_margin_top = 1.0
+content_margin_right = 8.0
+content_margin_bottom = 1.0
+bg_color = Color(0.96, 0.82, 0.25, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.396, 0.325, 0.463, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_face"]
+bg_color = Color(0.886, 0.937, 0.976, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.396, 0.325, 0.463, 0.6)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_choice"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 12.0
+content_margin_bottom = 6.0
+bg_color = Color(0.396, 0.325, 0.463, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.992, 0.965, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="DialogueBox" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_box")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+
+[node name="TextPanel" type="PanelContainer" parent="Root"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 270.0
+offset_right = 624.0
+offset_bottom = 352.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_text")
+
+[node name="HBox" type="HBoxContainer" parent="Root/TextPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PortraitFrame" type="PanelContainer" parent="Root/TextPanel/HBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_face")
+
+[node name="Portrait" type="TextureRect" parent="Root/TextPanel/HBox/PortraitFrame"]
+unique_name_in_owner = true
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Text" type="RichTextLabel" parent="Root/TextPanel/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "대사가 여기에 나옵니다."
+scroll_active = false
+
+[node name="NameTag" type="PanelContainer" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 255.0
+offset_right = 24.0
+offset_bottom = 255.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_name")
+
+[node name="NameLabel" type="Label" parent="Root/NameTag"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_bold")
+text = "A"
+
+[node name="NextMark" type="Label" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 604.0
+offset_top = 334.0
+offset_right = 616.0
+offset_bottom = 349.0
+theme_override_colors/font_color = Color(0.396, 0.325, 0.463, 1)
+text = "▼"
+
+[node name="ChoicePanel" type="PanelContainer" parent="Root"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 624.0
+offset_top = 262.0
+offset_right = 624.0
+offset_bottom = 262.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_choice")
+
+[node name="ChoiceList" type="VBoxContainer" parent="Root/ChoicePanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4

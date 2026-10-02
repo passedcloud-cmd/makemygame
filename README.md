@@ -19,7 +19,7 @@ Godot 4로 만들고 스팀 출시를 목표로 한다.
 | C | 특수 행동 (미정) | Y |
 | Esc | 메뉴 | Start |
 
-지금은 이동만 동작한다. 나머지 키는 이름만 등록해 둔 상태.
+지금은 이동, 조사(Z), 대화 넘기기, 선택지 고르기가 동작한다. 공격/스킬 키는 이름만 등록해 둔 상태.
 
 ## 화면 설정
 
@@ -32,16 +32,26 @@ Godot 4로 만들고 스팀 출시를 목표로 한다.
 ```
 art/
   sprites/test/   임시 캐릭터 도트 (A, B, C) - 나중에 직접 그린 걸로 교체
+  portraits/      대화창 얼굴 그림 (A.png, A_smile.png ...)
   tiles/test/     임시 바닥, 벽, 상자
+  fonts/galmuri/  한글 도트 폰트 (갈무리11, OFL 라이선스 - 상업 게임에 써도 됨)
+dialogue/         대본 파일 (.txt). 쓰는 법은 dialogue/README.md
 scenes/
   characters/     player.tscn (주인공), follower.tscn (따라오는 동료)
-  maps/           맵 장면들. test_room.tscn = 이동 테스트용 방
-  props/          상자 같은 소품
+  maps/           맵 장면들. test_room.tscn = 테스트용 방
+  props/          상자, 조사 영역(interactable.tscn) 같은 소품
+  ui/             대화창, 테마(폰트/글자색)
 scripts/
+  autoload/       게임 전체에서 쓰는 것 (GameState = 호감도 같은 변수)
   characters/     캐릭터 이동, 애니메이션 코드
+  dialogue/       대화창, 대본 읽기 코드
   maps/           맵 공통 코드
+  props/          소품 코드
 tools/            임시 그림을 만드는 파이썬 스크립트
 ```
+
+> 나중에 게임을 내보낼(Export) 때 `dialogue/*.txt` 파일이 포함되도록
+> 내보내기 설정의 "리소스 외 파일 포함" 칸에 `*.txt`를 넣어야 한다.
 
 ## 캐릭터 도트 규격
 

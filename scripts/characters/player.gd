@@ -10,6 +10,14 @@ extends CharacterBody2D
 ## 캐릭터 그림 (32x48 칸, 3열 x 4행 스프라이트 시트)
 @export var sprite_sheet: Texture2D
 
+## 바라보는 방향별로 조사 영역을 놓을 위치 (발 기준)
+const INTERACT_OFFSETS := {
+	CharacterSprite.Facing.DOWN: Vector2(0, 10),
+	CharacterSprite.Facing.LEFT: Vector2(-14, -4),
+	CharacterSprite.Facing.RIGHT: Vector2(14, -4),
+	CharacterSprite.Facing.UP: Vector2(0, -14),
+}
+
 ## 발자취 점 사이의 간격 (픽셀)
 const TRAIL_STEP := 1.0
 ## 발자취를 몇 개까지 기억할지. 동료가 많거나 간격이 넓으면 늘려야 한다.
@@ -19,6 +27,7 @@ const TRAIL_LENGTH := 120
 var trail: Array[Vector2] = []
 
 @onready var sprite: CharacterSprite = $Sprite
+@onready var interact_area: Area2D = $InteractArea
 
 
 func _ready() -> void:
@@ -30,13 +39,32 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	# 대화 중에는 움직이지 않는다.
+	if Dialogue.active:
+		velocity = Vector2.ZERO
+		sprite.moving = false
+		return
+
 	var input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = input * speed
 	move_and_slide()
 
 	sprite.moving = input != Vector2.ZERO
 	sprite.face_towards(input)
+	interact_area.position = INTERACT_OFFSETS[sprite.facing]
 	_record_trail(global_position)
+
+
+## Z(확인)를 누르면 바라보는 쪽에 있는 물건을 조사한다.
+func _unhandled_input(event: InputEvent) -> void:
+	if Dialogue.active or not event.is_action_pressed("confirm"):
+		return
+	for area in interact_area.get_overlapping_areas():
+		if area is Interactable:
+			# 같은 키 입력이 대화창에도 전달돼서 첫 줄을 건너뛰지 않도록 여기서 멈춘다.
+			get_viewport().set_input_as_handled()
+			area.interact()
+			return
 
 
 ## 새 위치를 발자취에 추가한다. 1픽셀 간격으로 촘촘하게 채워서

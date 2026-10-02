@@ -6,6 +6,9 @@ extends Node2D
 ## 방의 크기 (픽셀). 32의 배수로 맞추면 타일과 딱 맞는다.
 @export var room_size := Vector2i(960, 544)
 @export var camera: Camera2D
+## 방에 들어오자마자 보여줄 대화 (비워두면 없음)
+@export_file("*.txt") var intro_dialogue := ""
+@export var intro_block := ""
 
 
 func _ready() -> void:
@@ -14,3 +17,5 @@ func _ready() -> void:
 		camera.limit_top = 0
 		camera.limit_right = room_size.x
 		camera.limit_bottom = room_size.y
+	if not intro_dialogue.is_empty():
+		Dialogue.start.call_deferred(intro_dialogue, intro_block)

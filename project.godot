@@ -11,6 +11,11 @@ run/main_scene="res://scenes/maps/test_room.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GameState="*res://scripts/autoload/game_state.gd"
+Dialogue="*res://scenes/ui/dialogue_box.tscn"
+
 [display]
 
 window/size/viewport_width=640
@@ -20,6 +25,10 @@ window/size/window_height_override=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="keep"
 window/stretch/scale_mode="integer"
+
+[gui]
+
+theme/custom="res://scenes/ui/theme.tres"
 
 [input]
 
@@ -90,6 +99,11 @@ menu={
 , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":6,"pressure":0.0,"pressed":false,"script":null)
 ]
 }
+
+[layer_names]
+
+2d_physics/layer_1="world"
+2d_physics/layer_3="interact"
 
 [rendering]
 

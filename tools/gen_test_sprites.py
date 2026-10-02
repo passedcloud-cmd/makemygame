@@ -555,10 +555,22 @@ def background(w, h):
     return bg
 
 
+PORTRAIT_OUT = OUT.parent.parent / "portraits"
+
+
+def portrait(who):
+    """대화창용 임시 얼굴 그림 (32x32). 정면 도트에서 머리 부분만 잘라낸다."""
+    L = layout(CHARS[who])
+    top = L["ht"] - 4
+    return frame(who, "down", 1).crop((0, top, 32, top + 32))
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
+    PORTRAIT_OUT.mkdir(parents=True, exist_ok=True)
     for who in CHARS:
         sheet(who).save(OUT / f"{who}_test.png")
+        portrait(who).save(PORTRAIT_OUT / f"{who}.png")
 
     scale = 6
     # 정면 / 옆 / 뒤 미리보기

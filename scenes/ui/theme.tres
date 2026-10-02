@@ -1,0 +1,10 @@
+[gd_resource type="Theme" format=3]
+
+[ext_resource type="FontFile" path="res://art/fonts/galmuri/Galmuri11.ttf" id="1_font"]
+
+[resource]
+default_font = ExtResource("1_font")
+default_font_size = 12
+Label/colors/font_color = Color(0.231, 0.2, 0.251, 1)
+RichTextLabel/colors/default_color = Color(0.231, 0.2, 0.251, 1)
+RichTextLabel/constants/line_separation = 4
