@@ -7,35 +7,34 @@
 [ext_resource type="PackedScene" path="res://scenes/characters/follower.tscn" id="5_follower"]
 [ext_resource type="Texture2D" path="res://art/sprites/test/B_test.png" id="6_b"]
 [ext_resource type="Texture2D" path="res://art/sprites/test/C_test.png" id="7_c"]
-[ext_resource type="PackedScene" path="res://scenes/props/box.tscn" id="8_box"]
-[ext_resource type="PackedScene" path="res://scenes/props/interactable.tscn" id="9_interact"]
-[ext_resource type="PackedScene" path="res://scenes/ui/vignette.tscn" id="10_vignette"]
-[ext_resource type="Texture2D" path="res://art/tiles/test/door.png" id="11_door_tex"]
-[ext_resource type="PackedScene" path="res://scenes/maps/door.tscn" id="12_door"]
-[ext_resource type="Script" path="res://scripts/maps/spawn_point.gd" id="13_spawn"]
+[ext_resource type="PackedScene" path="res://scenes/monsters/shadow_blob.tscn" id="8_blob"]
+[ext_resource type="PackedScene" path="res://scenes/maps/door.tscn" id="9_door"]
+[ext_resource type="Script" path="res://scripts/maps/spawn_point.gd" id="10_spawn"]
+[ext_resource type="PackedScene" path="res://scenes/ui/vignette.tscn" id="11_vignette"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_top"]
-size = Vector2(960, 64)
+size = Vector2(640, 64)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bottom"]
-size = Vector2(960, 16)
+size = Vector2(640, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_side"]
-size = Vector2(16, 544)
+size = Vector2(16, 384)
 
-[node name="TestRoom" type="Node2D" node_paths=PackedStringArray("camera")]
+[node name="TestRoom2" type="Node2D" node_paths=PackedStringArray("camera")]
 script = ExtResource("1_room")
-room_size = Vector2i(960, 544)
+room_size = Vector2i(640, 384)
 camera = NodePath("World/Player/Camera")
+ambient_color = Color(0.62, 0.7, 0.95, 1)
 intro_dialogue = "res://dialogue/test_room.txt"
-intro_block = "intro"
+intro_block = "room2_intro"
 
 [node name="Floor" type="Sprite2D" parent="."]
 texture_repeat = 2
 texture = ExtResource("2_floor")
 centered = false
 region_enabled = true
-region_rect = Rect2(0, 0, 960, 544)
+region_rect = Rect2(0, 0, 640, 384)
 
 [node name="WallFace" type="Sprite2D" parent="."]
 texture_repeat = 2
@@ -43,101 +42,89 @@ position = Vector2(0, 32)
 texture = ExtResource("3_wall")
 centered = false
 region_enabled = true
-region_rect = Rect2(0, 0, 960, 32)
+region_rect = Rect2(0, 0, 640, 32)
 
 [node name="CeilingTop" type="ColorRect" parent="."]
-offset_right = 960.0
+offset_right = 640.0
 offset_bottom = 32.0
 color = Color(0.09, 0.08, 0.12, 1)
 
 [node name="CeilingBottom" type="ColorRect" parent="."]
-offset_top = 528.0
-offset_right = 960.0
-offset_bottom = 544.0
+offset_top = 368.0
+offset_right = 640.0
+offset_bottom = 384.0
 color = Color(0.09, 0.08, 0.12, 1)
 
 [node name="CeilingLeft" type="ColorRect" parent="."]
 offset_right = 16.0
-offset_bottom = 544.0
+offset_bottom = 384.0
 color = Color(0.09, 0.08, 0.12, 1)
 
 [node name="CeilingRight" type="ColorRect" parent="."]
-offset_left = 944.0
-offset_right = 960.0
-offset_bottom = 544.0
+offset_left = 624.0
+offset_right = 640.0
+offset_bottom = 384.0
 color = Color(0.09, 0.08, 0.12, 1)
 
-[node name="DoorSprite" type="Sprite2D" parent="."]
-position = Vector2(464, 16)
-texture = ExtResource("11_door_tex")
-centered = false
+[node name="Doorway" type="ColorRect" parent="."]
+offset_left = 304.0
+offset_top = 366.0
+offset_right = 336.0
+offset_bottom = 384.0
+color = Color(0.02, 0.016, 0.03, 1)
 
 [node name="Walls" type="StaticBody2D" parent="."]
 
 [node name="Top" type="CollisionShape2D" parent="Walls"]
-position = Vector2(480, 32)
+position = Vector2(320, 32)
 shape = SubResource("RectangleShape2D_top")
 
 [node name="Bottom" type="CollisionShape2D" parent="Walls"]
-position = Vector2(480, 536)
+position = Vector2(320, 376)
 shape = SubResource("RectangleShape2D_bottom")
 
 [node name="Left" type="CollisionShape2D" parent="Walls"]
-position = Vector2(8, 272)
+position = Vector2(8, 192)
 shape = SubResource("RectangleShape2D_side")
 
 [node name="Right" type="CollisionShape2D" parent="Walls"]
-position = Vector2(952, 272)
+position = Vector2(632, 192)
 shape = SubResource("RectangleShape2D_side")
 
 [node name="World" type="Node2D" parent="."]
 y_sort_enabled = true
 
 [node name="Player" parent="World" instance=ExtResource("4_player")]
-position = Vector2(480, 300)
+position = Vector2(320, 336)
 
 [node name="B" parent="World" node_paths=PackedStringArray("leader") instance=ExtResource("5_follower")]
-position = Vector2(480, 280)
+position = Vector2(320, 336)
 leader = NodePath("../Player")
 gap = 26
 sprite_sheet = ExtResource("6_b")
 
 [node name="C" parent="World" node_paths=PackedStringArray("leader") instance=ExtResource("5_follower")]
-position = Vector2(480, 260)
+position = Vector2(320, 336)
 leader = NodePath("../Player")
 gap = 52
 sprite_sheet = ExtResource("7_c")
 
-[node name="Box1" parent="World" instance=ExtResource("8_box")]
-position = Vector2(300, 220)
+[node name="Blob1" parent="World" instance=ExtResource("8_blob")]
+position = Vector2(180, 170)
 
-[node name="Box2" parent="World" instance=ExtResource("8_box")]
-position = Vector2(332, 220)
+[node name="Blob2" parent="World" instance=ExtResource("8_blob")]
+position = Vector2(470, 190)
 
-[node name="Box3" parent="World" instance=ExtResource("8_box")]
-position = Vector2(680, 420)
-
-[node name="Interactables" type="Node2D" parent="."]
-
-[node name="Box1Talk" parent="Interactables" instance=ExtResource("9_interact")]
-position = Vector2(316, 220)
-dialogue_file = "res://dialogue/test_room.txt"
-block = "box"
-
-[node name="Box3Talk" parent="Interactables" instance=ExtResource("9_interact")]
-position = Vector2(680, 420)
-dialogue_file = "res://dialogue/test_room.txt"
-block = "drawing"
-
-[node name="DoorToRoom2" parent="." instance=ExtResource("12_door")]
-position = Vector2(480, 66)
-target_scene = "res://scenes/maps/test_room_2.tscn"
-target_spawn = "FromRoom1"
+[node name="DoorToRoom1" parent="." instance=ExtResource("9_door")]
+position = Vector2(320, 366)
+target_scene = "res://scenes/maps/test_room.tscn"
+target_spawn = "FromRoom2"
 
 [node name="Spawns" type="Node2D" parent="."]
 
-[node name="FromRoom2" type="Marker2D" parent="Spawns"]
-position = Vector2(480, 100)
-script = ExtResource("13_spawn")
+[node name="FromRoom1" type="Marker2D" parent="Spawns"]
+position = Vector2(320, 336)
+script = ExtResource("10_spawn")
+facing = 3
 
-[node name="Vignette" parent="." instance=ExtResource("10_vignette")]
+[node name="Vignette" parent="." instance=ExtResource("11_vignette")]
