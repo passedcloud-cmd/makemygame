@@ -9,8 +9,25 @@ const FADE_TIME := 0.3
 var busy := false
 ## 새 방에서 주인공을 세울 지점 이름 (Room이 읽어 간다)
 var spawn_name := ""
+## 지점 이름 대신 정확한 위치로 세울 때 (세이브 불러오기). null이면 사용 안 함
+var spawn_position: Variant = null
+var spawn_facing := 0
+
+
+func _ready() -> void:
+	# 일시정지 중에도 화면 전환은 움직여야 한다.
+	process_mode = Node.PROCESS_MODE_ALWAYS
 
 @onready var _fade: ColorRect = $Fade
+
+
+## 방을 옮기고 정확한 위치에 주인공을 세운다 (세이브 불러오기용).
+func change_room_at(scene_path: String, pos: Vector2, facing: int) -> void:
+	if busy:
+		return
+	spawn_position = pos
+	spawn_facing = facing
+	change_room(scene_path, "")
 
 
 func change_room(scene_path: String, target_spawn: String) -> void:

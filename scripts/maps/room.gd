@@ -8,6 +8,8 @@ extends Node2D
 
 const HUD_SCENE := preload("res://scenes/ui/hud.tscn")
 
+## 세이브 슬롯에 보여줄 장소 이름
+@export var room_name := "어딘가"
 ## 방의 크기 (픽셀). 32의 배수로 맞추면 타일과 딱 맞는다.
 @export var room_size := Vector2i(960, 544)
 @export var camera: Camera2D
@@ -37,11 +39,17 @@ func _ready() -> void:
 
 
 func _place_player() -> void:
+	var player := get_tree().get_first_node_in_group("player") as Player
+	# 세이브를 불러온 경우: 저장했던 정확한 위치로
+	if Transition.spawn_position != null:
+		if player:
+			player.place_at(Transition.spawn_position, Transition.spawn_facing)
+		Transition.spawn_position = null
+		return
 	if Transition.spawn_name.is_empty():
 		return
 	var spawn := get_node_or_null("Spawns/" + Transition.spawn_name) as SpawnPoint
 	Transition.spawn_name = ""
-	var player := get_tree().get_first_node_in_group("player") as Player
 	if spawn and player:
 		player.place_at(spawn.global_position, spawn.facing)
 

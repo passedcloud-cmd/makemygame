@@ -1,0 +1,159 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/title.gd" id="1_title"]
+[ext_resource type="Script" path="res://scripts/ui/menu_list.gd" id="2_menu"]
+[ext_resource type="Script" path="res://scripts/ui/slot_list.gd" id="3_slots"]
+[ext_resource type="Texture2D" path="res://art/sprites/test/A_test.png" id="4_a"]
+[ext_resource type="Texture2D" path="res://art/sprites/test/B_test.png" id="5_b"]
+[ext_resource type="Texture2D" path="res://art/sprites/test/C_test.png" id="6_c"]
+[ext_resource type="Shader" path="res://shaders/vignette.gdshader" id="7_vignette"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vignette"]
+shader = ExtResource("7_vignette")
+shader_parameter/strength = 0.6
+shader_parameter/radius = 0.85
+shader_parameter/softness = 0.55
+shader_parameter/tint = Color(0.03, 0.02, 0.06, 1)
+
+[sub_resource type="Gradient" id="Gradient_bg"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.11, 0.1, 0.17, 1, 0.035, 0.03, 0.055, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bg"]
+gradient = SubResource("Gradient_bg")
+width = 64
+height = 64
+fill_from = Vector2(0.5, 0.2)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="Gradient" id="Gradient_glow"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 0.94, 0.82, 0.22, 1, 0.94, 0.82, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_glow"]
+gradient = SubResource("Gradient_glow")
+width = 256
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_dust"]
+offsets = PackedFloat32Array(0, 0.2, 0.8, 1)
+colors = PackedColorArray(0.85, 0.82, 1, 0, 0.85, 0.82, 1, 0.7, 0.85, 0.82, 1, 0.5, 0.85, 0.82, 1, 0)
+
+[node name="Title" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 640.0
+offset_bottom = 360.0
+script = ExtResource("1_title")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 360.0
+texture = SubResource("GradientTexture2D_bg")
+expand_mode = 1
+
+[node name="Dust" type="CPUParticles2D" parent="."]
+position = Vector2(320, 380)
+amount = 40
+lifetime = 9.0
+preprocess = 9.0
+emission_shape = 3
+emission_rect_extents = Vector2(340, 10)
+direction = Vector2(0, -1)
+spread = 20.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 18.0
+initial_velocity_max = 36.0
+scale_amount_min = 1.0
+scale_amount_max = 2.0
+color_ramp = SubResource("Gradient_dust")
+
+[node name="Glow" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+position = Vector2(470, 290)
+texture = SubResource("GradientTexture2D_glow")
+
+[node name="C" type="Sprite2D" parent="."]
+position = Vector2(430, 252)
+scale = Vector2(2, 2)
+texture = ExtResource("6_c")
+hframes = 3
+vframes = 4
+frame = 1
+
+[node name="A" type="Sprite2D" parent="."]
+position = Vector2(470, 252)
+scale = Vector2(2, 2)
+texture = ExtResource("4_a")
+hframes = 3
+vframes = 4
+frame = 1
+
+[node name="B" type="Sprite2D" parent="."]
+position = Vector2(510, 252)
+scale = Vector2(2, 2)
+texture = ExtResource("5_b")
+hframes = 3
+vframes = 4
+frame = 1
+
+[node name="Vignette" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_vignette")
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 70.0
+offset_right = 400.0
+offset_bottom = 106.0
+theme_override_font_sizes/font_size = 24
+text = "제목 미정"
+
+[node name="Subtitle" type="Label" parent="."]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 108.0
+offset_right = 400.0
+offset_bottom = 124.0
+theme_override_colors/font_color = Color(0.65, 0.61, 0.73, 1)
+text = "- 누군가의 꿈속에서 -"
+
+[node name="Menu" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 52.0
+offset_top = 196.0
+offset_right = 200.0
+offset_bottom = 280.0
+theme_override_constants/separation = 8
+script = ExtResource("2_menu")
+
+[node name="Version" type="Label" parent="."]
+layout_mode = 0
+offset_left = 52.0
+offset_top = 330.0
+offset_right = 300.0
+offset_bottom = 346.0
+theme_override_colors/font_color = Color(0.45, 0.42, 0.52, 1)
+text = "개발 버전"
+
+
+[node name="Slots" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 150.0
+offset_top = 150.0
+offset_right = 150.0
+offset_bottom = 150.0
+script = ExtResource("3_slots")

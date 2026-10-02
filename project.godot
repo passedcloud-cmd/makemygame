@@ -7,7 +7,7 @@ config_version=5
 
 config/name="MakeMyGame"
 config/description="무의식 세계 탈출 탑다운 스토리 게임 (가제)"
-run/main_scene="res://scenes/maps/test_room.tscn"
+run/main_scene="res://scenes/ui/title.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -16,6 +16,8 @@ config/icon="res://icon.svg"
 GameState="*res://scripts/autoload/game_state.gd"
 Dialogue="*res://scenes/ui/dialogue_box.tscn"
 Transition="*res://scenes/ui/transition.tscn"
+SaveManager="*res://scripts/autoload/save_manager.gd"
+PauseMenu="*res://scripts/ui/pause_menu.gd"
 
 [display]
 

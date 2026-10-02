@@ -23,6 +23,7 @@ size = Vector2(16, 384)
 
 [node name="TestRoom2" type="Node2D" node_paths=PackedStringArray("camera")]
 script = ExtResource("1_room")
+room_name = "서늘한 방"
 room_size = Vector2i(640, 384)
 camera = NodePath("World/Player/Camera")
 ambient_color = Color(0.62, 0.7, 0.95, 1)

@@ -25,6 +25,7 @@ size = Vector2(16, 544)
 
 [node name="TestRoom" type="Node2D" node_paths=PackedStringArray("camera")]
 script = ExtResource("1_room")
+room_name = "시작의 방"
 room_size = Vector2i(960, 544)
 camera = NodePath("World/Player/Camera")
 intro_dialogue = "res://dialogue/test_room.txt"
